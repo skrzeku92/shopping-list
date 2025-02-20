@@ -7,6 +7,11 @@ import Dashboard from './views/dashboard';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { collection, getDoc, getDocs, getFirestore } from 'firebase/firestore';
+import { app } from './firebase';
+import SingleList from './views/single-list';
+import Login from './views/login';
 
 const darkTheme = createTheme({
   palette: {
@@ -16,11 +21,17 @@ const darkTheme = createTheme({
 
 function App() {
 
+  const router = createBrowserRouter([
+    { path: '/', element: <Dashboard/>},
+    {path: '/login', element: <Login/>},
+    {path: 'list/:id', element: <SingleList/>}
+  ]);
+
   
   return (
     <ThemeProvider theme={darkTheme}>
+        <RouterProvider router={router}/>
     <CssBaseline />
-      <Dashboard/>
     </ThemeProvider>
   )
 }

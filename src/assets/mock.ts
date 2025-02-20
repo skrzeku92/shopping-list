@@ -6,6 +6,11 @@ name: string;
 quantity: number;
 }
 
+export type Invitation = {
+    id: string;
+    
+}
+
 export type List  = {
     id: string;
     name: string;
@@ -42,5 +47,30 @@ export const mockLists: List[] = [
                 completed: true
             }
         ]
-    }
+    },
+    {
+        id: 'dsda',
+        createdAt: 312312,
+        createdBy: 'Pawel',
+        name: 'Biedronka2',
+        visibledBy: [],
+        completed: false,
+        notes: 'notes',
+        products: [
+            {
+                id: 'dsadff',
+                category: 'vegetables',
+                name: 'Gruszka',
+                quantity: 3,
+                completed: false,
+            },
+            {
+                id: '9fds',
+                category: 'drink',
+                name: 'Sok pomarańczowy',
+                quantity: 1,
+                completed: true
+            }
+        ]
+    },
 ]

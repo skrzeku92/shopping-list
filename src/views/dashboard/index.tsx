@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
-import {List, mockLists} from '../../assets/mock';
 import ListCard from "../../components/list-card";
+import * as S from "../../assets/styles";
+import { fetchAllLists } from "../../utils";
+import { List } from "../../types/type";
 
 const Dashboard: React.FC = ()=> {
     const [lists, setLists] = useState<List[]>([]);
 
-    useEffect(()=> {
-        setLists(mockLists);
-        console.log(mockLists);
+    const fetchlists = async (): Promise<void>=> {
+        const newLists = await fetchAllLists('admin@wp.pl');
+        console.log(newLists);
+        setLists(newLists);
+    }
+
+    useEffect(()=> { 
+        fetchlists();
     }, [])
 
     return (
-        <div>{lists.map((list, index)=> {
+        <S.ListWrapper>{lists.map((list, index)=> { 
             return (<ListCard list={list} key={index}/>)
-        })}</div>
+        })}</S.ListWrapper>
     )
 }
 
