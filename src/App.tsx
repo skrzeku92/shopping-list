@@ -7,11 +7,14 @@ import Dashboard from './views/dashboard';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import { collection, getDoc, getDocs, getFirestore } from 'firebase/firestore';
-import { app } from './firebase';
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import SingleList from './views/single-list';
 import Login from './views/login';
+import {Header} from './components/header';
+import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Button } from '@mui/material';
+import { addList } from './utils';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,17 +23,35 @@ const darkTheme = createTheme({
 });
 
 function App() {
+  const [isLoggedIn, setLoggedIn] = useState<boolean | undefined>(undefined);
+  const [user, setUser] = useState<any>(undefined);
+
+  useEffect(()=> {
+    const unsubscribe = onAuthStateChanged(getAuth(), (u) => {
+      setLoggedIn(!!u);
+      setUser(u);
+      console.log(u);
+    });
+
+    return ()=> unsubscribe();
+  })
 
   const router = createBrowserRouter([
-    { path: '/', element: <Dashboard/>},
+    { path: '/', element: !isLoggedIn ? <Navigate to="/login" replace /> : <Dashboard/>},
     {path: '/login', element: <Login/>},
     {path: 'list/:id', element: <SingleList/>}
   ]);
 
+  const addNew = ()=> {
+    addList('newList', user.email);
+  }
+
   
   return (
     <ThemeProvider theme={darkTheme}>
-        <RouterProvider router={router}/>
+        <Header auth={!!isLoggedIn}/>
+        {isLoggedIn !== undefined && <RouterProvider router={router}/>}
+        <Button onClick={addNew}>Add List</Button>
     <CssBaseline />
     </ThemeProvider>
   )

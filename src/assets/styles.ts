@@ -17,3 +17,9 @@ export const CardHeader = styled.h2`
 line-heigh: 1.2;
 margin: 10px 0;
 `;
+
+export const FlexVertical = styled.div`
+display: flex;
+flex-direction: column;
+gap: 8px;
+`;
