@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { Button } from '@mui/material';
 import { addList } from './utils';
+import { useDispatch } from 'react-redux';
+import { setUser } from './redux/reducers/user';
 
 const darkTheme = createTheme({
   palette: {
@@ -24,12 +26,12 @@ const darkTheme = createTheme({
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState<boolean | undefined>(undefined);
-  const [user, setUser] = useState<any>(undefined);
+  const dispatch = useDispatch();
 
   useEffect(()=> {
     const unsubscribe = onAuthStateChanged(getAuth(), (u) => {
       setLoggedIn(!!u);
-      setUser(u);
+      dispatch(setUser(u))
       console.log(u);
     });
 
@@ -42,16 +44,11 @@ function App() {
     {path: 'list/:id', element: <SingleList/>}
   ]);
 
-  const addNew = ()=> {
-    addList('newList', user.email);
-  }
-
   
   return (
     <ThemeProvider theme={darkTheme}>
         <Header auth={!!isLoggedIn}/>
         {isLoggedIn !== undefined && <RouterProvider router={router}/>}
-        <Button onClick={addNew}>Add List</Button>
     <CssBaseline />
     </ThemeProvider>
   )

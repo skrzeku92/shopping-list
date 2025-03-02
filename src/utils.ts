@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, or, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where } from "firebase/firestore";
 import { app, getAuth } from "./firebase";
 import { List } from "./types/type";
 
@@ -15,6 +15,20 @@ export const fetchAllLists = async (userEmail: string)=> {
     });
 
     return res;
+}
+
+export const getList = async (id: string) => {
+    const doc_ref = doc(db, "lists", id);
+    console.log(id);
+        try {
+        const snapshot = await getDoc(doc_ref);
+        console.log(snapshot.data());
+        return snapshot.data();
+    }
+    catch (e) {
+        console.error(e);
+    }
+    
 }
 
 export const addList = async (title: string, userEmail: string)=> {
