@@ -23,3 +23,17 @@ display: flex;
 flex-direction: column;
 gap: 8px;
 `;
+
+export const ProductRow = styled.div<{$isSelected: boolean}>`
+display: flex;
+gap: 4px;
+align-items: center;
+background-color: ${props => props.$isSelected ? 'blue': 'transparent'};
+`;
+
+export const ReadyAddingButton = styled.div`
+position: absolute;
+right: 10px;
+bottom: 20%;
+
+`;

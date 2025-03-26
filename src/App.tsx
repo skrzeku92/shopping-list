@@ -17,6 +17,7 @@ import { Button } from '@mui/material';
 import { addList } from './utils';
 import { useDispatch } from 'react-redux';
 import { setUser } from './redux/reducers/user';
+import AddProduct from './views/add-product';
 
 const darkTheme = createTheme({
   palette: {
@@ -41,7 +42,8 @@ function App() {
   const router = createBrowserRouter([
     { path: '/', element: !isLoggedIn ? <Navigate to="/login" replace /> : <Dashboard/>},
     {path: '/login', element: <Login/>},
-    {path: 'list/:id', element: <SingleList/>}
+    {path: 'list/:id', element: <SingleList/>},
+    {path: 'add-new', element: <AddProduct/>}
   ]);
 
   

@@ -34,14 +34,23 @@ db.run(`CREATE TABLE IF NOT EXISTS products (
 
 /** Function that fetches products from database. */
 app.get("/products", (req, res) => {
-  db.all("SELECT * FROM products", [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+    const { name } = req.query;
+    let sql = "SELECT * FROM products";
+    const params = [];
+  
+    if (name) {
+      sql += " WHERE LOWER(name) LIKE ?";
+      params.push(`%${name.toLowerCase()}%`);
     }
-    res.json(rows);
+  
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json(rows);
+    });
   });
-});
 
 /** Function that adds a new product to the database. */
 app.post("/products", (req, res) => {

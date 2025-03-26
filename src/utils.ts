@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where, setDoc } from "firebase/firestore";
 import { app, getAuth } from "./firebase";
 import { List } from "./types/type";
 
@@ -45,3 +45,29 @@ export const addList = async (title: string, userEmail: string)=> {
         console.error(e)
     }
 }
+
+export const updateList = async (list: List): Promise<void> => {
+    try {
+        await setDoc(doc(db, 'lists', list.id), list);
+        console.log('List Updated');
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
+ export const getProducts = async (str?: string)=> {
+        const params = new URLSearchParams();
+        str && params.append("name", str.toLocaleLowerCase());
+        const url = 'http://localhost:3000/products?' + params;
+        try {
+            const res = await fetch(url);
+            const js = await res.json();
+            console.log(js);
+            return js;
+        }
+        catch (e) {
+            console.error(e);
+            return [];
+        }
+    }

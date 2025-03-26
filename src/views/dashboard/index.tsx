@@ -5,13 +5,15 @@ import { addList, fetchAllLists } from "../../utils";
 import { List } from "../../types/type";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { setLists } from "../../redux/reducers/list";
 
 const Dashboard: React.FC = ()=> {
-    const [lists, setLists] = useState<List[]>([]);
+    const lists = useSelector((s: RootState)=> s.lists);
     const [addListPopupShown, setAddListPopupShown] = useState<boolean>(false);
     const currentUser = useSelector((s: RootState)=> s.user);
+    const dispatch = useDispatch();
 
     const fetchlists = async (): Promise<void>=> {
         if(!currentUser) {
@@ -19,7 +21,7 @@ const Dashboard: React.FC = ()=> {
         }
         const newLists = await fetchAllLists(currentUser.email);
         console.log(newLists);
-        setLists(newLists);
+        dispatch(setLists(newLists));
     }
 
     const onCreate = (title: string)=> {

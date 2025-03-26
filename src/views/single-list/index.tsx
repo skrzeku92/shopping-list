@@ -1,35 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getList } from '../../utils';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Button, Typography } from '@mui/material';
 import { List, Product } from '../../types/type';
 import AddIcon from '@mui/icons-material/Add';
-import {MockProducts} from '../../temp';
 
 const SingleList: React.FC = ()=> {
     const param = useParams();
     const currentUser = useSelector((s: RootState)=> s.user);
     const [list, setList] = useState<any>();
-
-    const fetchDbProducts = async ()=> {
-        const url = "http://localhost:3000/products";
-        try {
-            const res = await fetch(url);
-            const js = await res.json();
-            console.log(js);
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-
-    const forE = ()=> {
-        MockProducts.forEach((m)=> {
-            addSimpleProduct(m);
-        })
-    }
+    const navigate = useNavigate();
 
 
     const addSimpleProduct = async (prod: any)=> {
@@ -52,7 +34,6 @@ const SingleList: React.FC = ()=> {
         catch (e) {
             console.error(e);
         }
-
     }
 
     const setInitialState = async ()=> {
@@ -63,7 +44,6 @@ const SingleList: React.FC = ()=> {
 
     useEffect(()=> {
        setInitialState();
-       fetchDbProducts();
     }, [param.id])
 
     return (
@@ -79,7 +59,7 @@ const SingleList: React.FC = ()=> {
             </div>
             }
             <div>
-            <Button variant="outlined" startIcon={<AddIcon />} onClick={forE}>Add product</Button>
+            <Button variant="outlined" startIcon={<AddIcon />} onClick={()=>navigate('/add-new')}>Add product</Button>
             </div>
             
         </div>
