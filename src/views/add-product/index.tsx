@@ -1,17 +1,25 @@
 import { Button, Grid2 as Grid, IconButton, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { getProducts } from '../../utils';
 import useDebounce from '../../hooks/debounce';
-import { Product } from '../../types/type';
+import { List, Product } from '../../types/type';
 import { ProductRow, ReadyAddingButton } from '../../assets/styles';
 import CheckIcon from '@mui/icons-material/Check';
+import { useDispatch } from 'react-redux';
+import { updateList } from '../../redux/reducers/list';
 
-const AddProduct: React.FC = ()=> {
+type AddProductProps = {
+    targetList?: List;
+}
+
+
+const AddProduct: React.FC<AddProductProps> = (props: AddProductProps)=> {
     const [results, setResults] = useState([]);
     const {debounce} = useDebounce();
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+    const dispatch = useDispatch();
 
     const updateProductList = async (val: string)=> {
         if (val.trim().length < 3) return setResults([]);
@@ -27,10 +35,30 @@ const AddProduct: React.FC = ()=> {
     const onAddProduct = (product: Product) => {
         setSelectedProducts((prev) => [...prev, product]);
     };
+
+    const onConfirm = () => {
+        if (!props.targetList) {
+            console.error('Target list is missing');
+            return;
+        }
+        const newList = {
+            ...props.targetList, products: selectedProducts
+        }
+        dispatch(updateList(newList));
+    }
     
     const onRemoveProduct = (product: Product) => {
         setSelectedProducts((prev) => prev.filter((s) => s.name !== product.name));
     };
+
+    useEffect(()=> {
+        if (!props.targetList) {
+            setSelectedProducts([]);
+            return;
+        }
+        const currentlySelected = props.targetList.products;
+        setSelectedProducts(currentlySelected);
+    }, [])
    
     return (
         <div>
@@ -49,7 +77,7 @@ const AddProduct: React.FC = ()=> {
             </Grid>
 
             <ReadyAddingButton>
-                <Button variant='contained' startIcon={<CheckIcon/>}>Ready</Button>
+                <Button variant='contained' startIcon={<CheckIcon/>} onClick={onConfirm}>Ready</Button>
             </ReadyAddingButton>
         </div>
     )

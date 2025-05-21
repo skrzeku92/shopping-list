@@ -1,50 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getList } from '../../utils';
-import { useSelector } from 'react-redux';
+import { db, getList, MergeProducts, UpdateFirestoreList } from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { Button, Typography } from '@mui/material';
+import { Button, Dialog, Typography } from '@mui/material';
 import { List, Product } from '../../types/type';
 import AddIcon from '@mui/icons-material/Add';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { updateList } from '../../redux/reducers/list';
+import AddProduct from '../add-product';
 
 const SingleList: React.FC = ()=> {
     const param = useParams();
-    const currentUser = useSelector((s: RootState)=> s.user);
-    const [list, setList] = useState<any>();
+    const list = useSelector((state: RootState) => state.lists.find((l)=> l.id === param.id));
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [hasChanges, setHasChanges] = useState<boolean>(false);
+    const [dialogAddProductShown, toggleDialogAddProduct] = useState<boolean>(false);
 
+    const handleSaveList = async () => {
+        if (!list) return;
+        await UpdateFirestoreList(list);
+        setHasChanges(false);
+      };
 
-    const addSimpleProduct = async (prod: any)=> {
-        const url = "http://localhost:3000/products";
-        try {
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: prod.name,
-                    category: prod.category
-                })
-            });
+    useEffect(() => {
+        if (!list) return;
+        const listRef = doc(db, "lists", param.id ?? '');
+        const unsubscribe = onSnapshot(listRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const firestoreData = docSnap.data();
+            const mergedProducts: Product[] = MergeProducts(list.products, firestoreData.products || {});
+            const newList = {
+                ...list, 
+                products: mergedProducts
+            }
+            dispatch(updateList(newList));
+          }
+        });
     
-            const data = await res.json();
-            console.log("Response:", data);
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-
-    const setInitialState = async ()=> {
-        if (!param.id || !currentUser) return;
-        const newList = await getList(param.id);
-        setList(newList);
-    }
-
-    useEffect(()=> {
-       setInitialState();
-    }, [param.id])
+        return () => unsubscribe();
+      }, [param.id, dispatch]);
 
     return (
         <div>
@@ -60,8 +56,14 @@ const SingleList: React.FC = ()=> {
             }
             <div>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={()=>navigate('/add-new')}>Add product</Button>
+            <Button variant='contained' onClick={handleSaveList}>Save</Button>
             </div>
-            
+
+            <Dialog
+            open={dialogAddProductShown}
+            onClose={handleCloseListPopup}>
+              <AddProduct targetList={list}/>
+            </Dialog>
         </div>
     )
 }

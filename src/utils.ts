@@ -1,8 +1,8 @@
 import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where, setDoc } from "firebase/firestore";
 import { app, getAuth } from "./firebase";
-import { List } from "./types/type";
+import { List, Product } from "./types/type";
 
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export const fetchAllLists = async (userEmail: string)=> {
     console.log(getAuth());
@@ -46,9 +46,9 @@ export const addList = async (title: string, userEmail: string)=> {
     }
 }
 
-export const updateList = async (list: List): Promise<void> => {
+export const UpdateFirestoreList = async (list: List): Promise<void> => {
     try {
-        await setDoc(doc(db, 'lists', list.id), list);
+        await setDoc(doc(db, 'lists', list.id), list, {merge: true});
         console.log('List Updated');
     }
     catch (e) {
@@ -71,3 +71,18 @@ export const updateList = async (list: List): Promise<void> => {
             return [];
         }
     }
+
+    export const MergeProducts = (
+        localProducts: Product[],
+        firestoreProducts: Product[]
+      ): Product[] => {
+        return [...firestoreProducts, ...localProducts].reduce<Product[]>((acc, product) => {
+          const existingProduct = acc.find(p => p.name === product.name);
+          if (existingProduct) {
+            existingProduct.completed = existingProduct.completed || product.completed;
+          } else {
+            acc.push(product);
+          }
+          return acc;
+        }, []);
+      };
