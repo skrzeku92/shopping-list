@@ -79,7 +79,7 @@ export const UpdateFirestoreList = async (list: List): Promise<void> => {
         return [...firestoreProducts, ...localProducts].reduce<Product[]>((acc, product) => {
           const existingProduct = acc.find(p => p.name === product.name);
           if (existingProduct) {
-            existingProduct.completed = existingProduct.completed || product.completed;
+            existingProduct.completed = existingProduct.completed || product.completed || false;
           } else {
             acc.push(product);
           }

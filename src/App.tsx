@@ -42,8 +42,7 @@ function App() {
   const router = createBrowserRouter([
     { path: '/', element: !isLoggedIn ? <Navigate to="/login" replace /> : <Dashboard/>},
     {path: '/login', element: <Login/>},
-    {path: 'list/:id', element: <SingleList/>},
-    {path: 'add-new', element: <AddProduct/>}
+    {path: 'list/:id', element: <SingleList/>}
   ]);
 
   

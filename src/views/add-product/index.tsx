@@ -12,6 +12,7 @@ import { updateList } from '../../redux/reducers/list';
 
 type AddProductProps = {
     targetList?: List;
+    handleChange: ()=>void;
 }
 
 
@@ -33,7 +34,8 @@ const AddProduct: React.FC<AddProductProps> = (props: AddProductProps)=> {
     }
 
     const onAddProduct = (product: Product) => {
-        setSelectedProducts((prev) => [...prev, product]);
+        const newProduct: Product = {...product, completed: false}
+        setSelectedProducts((prev) => [...prev, newProduct]);
     };
 
     const onConfirm = () => {
@@ -44,7 +46,8 @@ const AddProduct: React.FC<AddProductProps> = (props: AddProductProps)=> {
         const newList = {
             ...props.targetList, products: selectedProducts
         }
-        dispatch(updateList(newList));
+        dispatch(updateList(newList)); 
+        props.handleChange();
     }
     
     const onRemoveProduct = (product: Product) => {
@@ -62,7 +65,7 @@ const AddProduct: React.FC<AddProductProps> = (props: AddProductProps)=> {
    
     return (
         <div>
-           <Grid container spacing={2}>
+           <Grid container spacing={2} sx={{minHeight: 300}}>
             <div>
             <TextField id="outlined-basic" label="Dodaj nową pozycje" variant="outlined" onChange={onInputChange}/>
             <div>

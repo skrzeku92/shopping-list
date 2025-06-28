@@ -12,9 +12,11 @@ const Lists = createSlice({
         },
         updateList: (state, action: PayloadAction<List>) => {
            const index = state.findIndex(list => list.id === action.payload.id);
+           console.log(index);
            if(index !== -1) {
                 state[index] = {...action.payload};
            }
+           else return [...state, action.payload]
         }
     }
 })
