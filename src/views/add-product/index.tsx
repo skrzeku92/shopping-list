@@ -59,7 +59,7 @@ const AddProduct: React.FC<AddProductProps> = (props: AddProductProps)=> {
             setSelectedProducts([]);
             return;
         }
-        const currentlySelected = props.targetList.products;
+        const currentlySelected = props.targetList.products ?? [];
         setSelectedProducts(currentlySelected);
     }, [])
    

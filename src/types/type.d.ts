@@ -8,7 +8,7 @@ export type Product = {
 export type List  = {
     id: string;
     title: string;
-    products: Product[];
+    products: Product[] | undefined;
     createdAt: number;
     createdBy: string;
     invited: string[];

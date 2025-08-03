@@ -25,7 +25,9 @@ const Dashboard: React.FC = ()=> {
     }
 
     const onCreate = (title: string)=> {
-        addList(title, currentUser.email);
+      if (!currentUser.email) return;
+      addList(title, currentUser.email);
+      fetchlists();
     }
 
     const handleOpenListPopup = () => {
@@ -64,11 +66,10 @@ const Dashboard: React.FC = ()=> {
           },
         }}
       >
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Create new list</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
+            To create new list, please enter the title of the list below.
           </DialogContentText>
           <TextField
             autoFocus

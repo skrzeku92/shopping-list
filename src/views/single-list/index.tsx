@@ -56,10 +56,11 @@ const SingleList: React.FC = ()=> {
           if (docSnap.exists()) {
             const firestoreData = docSnap.data() as List;
             if (!list) {
-              dispatch(updateList(firestoreData));
+              const id = docSnap.id;
+              dispatch(updateList({ ...firestoreData, id }));
               return;
             }
-            const mergedProducts: Product[] = MergeProducts(list.products, firestoreData.products || {});
+            const mergedProducts: Product[] = MergeProducts(list.products || [], firestoreData.products || []);
             const newList = {
                 ...list, 
                 products: mergedProducts
