@@ -34,23 +34,29 @@ db.run(`CREATE TABLE IF NOT EXISTS products (
 
 /** Function that fetches products from database. */
 app.get("/products", (req, res) => {
-    const { name } = req.query;
-    let sql = "SELECT * FROM products";
-    const params = [];
+  const { name, limit } = req.query;
+  let sql = "SELECT * FROM products";
+  const params = [];
+
+  if (name) {
+    sql += " WHERE LOWER(name) LIKE ?";
+    params.push(`%${name.toLowerCase()}%`);
+  }
+
+  const limitValue = parseInt(limit, 10);
+  const finalLimit = !isNaN(limitValue) && limitValue > 0 ? limitValue : 10;
   
-    if (name) {
-      sql += " WHERE LOWER(name) LIKE ?";
-      params.push(`%${name.toLowerCase()}%`);
+  sql += name ? " LIMIT ?" : " LIMIT ?"; // Append limit regardless
+  params.push(finalLimit);
+
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
     }
-  
-    db.all(sql, params, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json(rows);
-    });
+    res.json(rows);
   });
+});
 
 /** Function that adds a new product to the database. */
 app.post("/products", (req, res) => {

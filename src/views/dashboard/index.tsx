@@ -42,7 +42,7 @@ const Dashboard: React.FC = ()=> {
         fetchlists();
     }, [])
 
-    return (<>
+    return (<S.PageWrapper> 
        <S.ListWrapper>{lists.map((list, index)=> { 
             return (<ListCard list={list} key={index}/>)
         })}</S.ListWrapper>
@@ -88,7 +88,7 @@ const Dashboard: React.FC = ()=> {
           <Button type="submit">Create</Button>
         </DialogActions>
       </Dialog>
-    </>
+    </S.PageWrapper>
      
     )
 }

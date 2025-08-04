@@ -1,9 +1,19 @@
 import styled from 'styled-components';
+import { colorPrimary } from './variables';
 
 export const ListWrapper = styled.div`
 display: flex;
 gap: 12px;
 flex-flow: row-wrap; 
+`;
+
+export const PageWrapper = styled.div`
+display: block;
+min-height: 100vh;
+padding: 20px;
+position: relative;
+background-color: #121212;
+width: 100%;
 `;
 
 export const FlexCenter = styled.div`
@@ -28,12 +38,33 @@ export const ProductRow = styled.div<{$isSelected: boolean}>`
 display: flex;
 gap: 4px;
 align-items: center;
+padding: 5px 0;
 background-color: ${props => props.$isSelected ? 'blue': 'transparent'};
+ > p {
+    margin: 0;
+ }
 `;
 
-export const ReadyAddingButton = styled.div`
+export const ReadyAddingButton = styled.div<{$left?: boolean}>`
+position: absolute;
+${props => props.$left ? 'left: 10px;' : 'right: 10px'};
+bottom: 20%;
+display: flex;
+gap: 12px;
+`;
+
+export const AddProductButton = styled.div`
 position: absolute;
 right: 10px;
-bottom: 20%;
+bottom: 10px;
+`;
 
+export const ModalButtonsWrapper = styled.div`
+display: flex;
+gap: 12px;
+align-items: center;
+justify-content: flex-end;
+margin-top: 20px;
+border-top: solid 1px ${colorPrimary};
+padding: 15px;
 `;

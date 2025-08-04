@@ -9,6 +9,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { setLists, updateList } from '../../redux/reducers/list';
 import AddProduct from '../add-product';
+import * as S from '../../assets/styles';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const SingleList: React.FC = ()=> {
     const param = useParams();
@@ -20,7 +22,6 @@ const SingleList: React.FC = ()=> {
 
     const handleSaveList = async () => {
         if (!list) return;
-        console.log(list);
         await UpdateFirestoreList(list);
         setHasChanges(false);
       };
@@ -32,6 +33,16 @@ const SingleList: React.FC = ()=> {
       const onAddProducts = ()=> {
         toggleDialogAddProduct(false);
         setHasChanges(true);
+      }
+
+      const sortProducts = (products: Product[]): Product[] => {
+        const sortedProducts = [...products].sort((a, b) => {
+          if (a.completed === b.completed) {
+            return a.name.localeCompare(b.name);
+          }
+          return a.completed ? 1 : -1;
+        });
+        return sortedProducts;
       }
 
       /** Function that handles the product checkbox click. */
@@ -48,6 +59,14 @@ const SingleList: React.FC = ()=> {
         dispatch(updateList({...list, products: newProducts}))
         setHasChanges(true);
       }
+
+      const getSortedProducts = (): React.ReactNode => {
+        if (!list) return null;
+        const sortedProducts = sortProducts(list.products || []);
+        return sortedProducts.map((l, index)=> (
+          <FormControlLabel control={<Checkbox checked={l.completed} onChange={(_, val: boolean)=> onChecked(l.name, val)} />} label={l.name} key={index}/>
+      ))
+    }
 
     useEffect(() => {
         const listRef = doc(db, "lists", param.id ?? '');
@@ -75,29 +94,30 @@ const SingleList: React.FC = ()=> {
     
 
     return (
-        <div>
+        <S.PageWrapper>
             <Typography variant="h3" component="h3">
-                h1. Heading
+                {list?.title || 'List not found'}
             </Typography>
             {!list ? null : 
             <FormGroup>
-            {list.products && list.products.map((l, index)=> (
-                <FormControlLabel control={<Checkbox checked={l.completed} onChange={(_, val: boolean)=> onChecked(l.name, val)} />} label={l.name} key={index}/>
-            ))}
+              {getSortedProducts()}
             </FormGroup>
             }
-            <div>
+            <S.ReadyAddingButton>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={()=>toggleDialogAddProduct(true)}>Add product</Button>
             {hasChanges && <Button variant='contained' onClick={handleSaveList}>Save</Button>}
-            </div>
+            </S.ReadyAddingButton>
+            <S.ReadyAddingButton $left={true}>
+              <Button variant="outlined" onClick={()=> navigate('/')} startIcon={<ArrowBackIosIcon/>} >Back to lists</Button>
+            </S.ReadyAddingButton>
 
             <Dialog
             open={dialogAddProductShown}
             fullWidth
             onClose={()=>handleCloseListPopup}>
-              <AddProduct targetList={list} handleChange={onAddProducts}/>
+              <AddProduct targetList={list} handleChange={onAddProducts} handleClose={()=> toggleDialogAddProduct(false)}/>
             </Dialog>
-        </div>
+        </S.PageWrapper>
     )
 }
 

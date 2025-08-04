@@ -16,7 +16,7 @@ export const Header: React.FC<{auth: boolean}> = ({auth})=> {
       };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
             <AppBar position="static">
             <Toolbar>
           <IconButton
@@ -28,9 +28,6 @@ export const Header: React.FC<{auth: boolean}> = ({auth})=> {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
-          </Typography>
           {auth && (
             <div>
               <IconButton
