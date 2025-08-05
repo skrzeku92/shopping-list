@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { db, getList, MergeProducts, UpdateFirestoreList } from '../../utils';
+import { db, getList, MergeProducts, UpdateFirestoreList } from '../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Button, Checkbox, Dialog, FormControlLabel, FormGroup, Typography } from '@mui/material';

@@ -1,16 +1,10 @@
 import styled from 'styled-components';
 import { colorPrimary } from './variables';
 
-export const ListWrapper = styled.div`
-display: flex;
-gap: 12px;
-flex-flow: row-wrap; 
-`;
-
 export const PageWrapper = styled.div`
 display: block;
 min-height: 100vh;
-padding: 20px;
+padding: 20px 0;
 position: relative;
 background-color: #121212;
 width: 100%;

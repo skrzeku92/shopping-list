@@ -2,7 +2,7 @@ import { Button, Grid2 as Grid, IconButton, InputAdornment, TextField } from '@m
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { getProducts } from '../../utils';
+import { getProducts } from '../../helpers/utils';
 import useDebounce from '../../hooks/debounce';
 import { List, Product } from '../../types/type';
 import * as S from '../../assets/styles';

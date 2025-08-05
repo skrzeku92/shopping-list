@@ -1,11 +1,11 @@
 import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where, setDoc } from "firebase/firestore";
-import { app, getAuth } from "./firebase";
-import { List, Product } from "./types/type";
+import { app, getAuth } from "../firebase";
+import { List, Product } from "../types/type";
+import safeFetch from "./safe";
 
 export const db = getFirestore(app);
 
 export const fetchAllLists = async (userEmail: string)=> {
-    console.log(getAuth());
     const doc_refs = await getDocs(query(collection(db, 'lists'), or (where("createdBy", "==", userEmail), (where("invited", "array-contains", userEmail)))));
     const res: List[] = [];
 
@@ -46,13 +46,14 @@ export const addList = async (title: string, userEmail: string)=> {
     }
 }
 
-export const UpdateFirestoreList = async (list: List): Promise<void> => {
+export const UpdateFirestoreList = async (list: List): Promise<boolean> => {
     try {
         await setDoc(doc(db, 'lists', list.id), list, {merge: true});
-        console.log('List Updated');
+        return true;
     }
     catch (e) {
         console.error(e);
+        return false;
     }
 }
 
@@ -60,16 +61,12 @@ export const UpdateFirestoreList = async (list: List): Promise<void> => {
         const params = new URLSearchParams();
         str && params.append("name", str.toLocaleLowerCase());
         const url = 'http://localhost:3000/products?' + params;
-        try {
-            const res = await fetch(url);
-            const js = await res.json();
-            console.log(js);
-            return js;
-        }
-        catch (e) {
-            console.error(e);
+        const {data, error} = await safeFetch<Product[]>(url);
+        if (error) {
+            console.error(error);
             return [];
         }
+        return data;
     }
 
     export const MergeProducts = (

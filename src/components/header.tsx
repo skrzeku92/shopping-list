@@ -16,7 +16,7 @@ export const Header: React.FC<{auth: boolean}> = ({auth})=> {
       };
 
     return (
-        <Box sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
+        <Box sx={{ flexGrow: 1}}>
             <AppBar position="static">
             <Toolbar>
           <IconButton
