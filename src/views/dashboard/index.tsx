@@ -2,23 +2,17 @@ import React, { useEffect, useState } from "react";
 import ListCard from "../../components/list-card";
 import * as S from "../../assets/styles";
 import { addList, fetchAllLists } from "../../helpers/utils";
-import { List } from "../../types/type";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid2, IconButton, TextField } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setLists } from "../../redux/reducers/list";
-import ShareDialog from "../../components/share-dialog";
-import safeFetch from "../../helpers/safe";
 
 const Dashboard: React.FC = ()=> {
     const lists = useSelector((s: RootState)=> s.lists);
     const [addListPopupShown, setAddListPopupShown] = useState<boolean>(false);
-    const [sharePopupShown, setSharePopupShown] = useState<boolean>(false);
     const currentUser = useSelector((s: RootState)=> s.user);
     const dispatch = useDispatch();
-    const [targetList, setTargetList] = useState<List | null>(null);
-
     const fetchlists = async (): Promise<void>=> {
         if(!currentUser) {
           console.error('User is not defined');
@@ -48,23 +42,11 @@ const Dashboard: React.FC = ()=> {
 
     return (<S.PageWrapper> 
        <Grid2 container spacing={2}>{lists.map((list, index)=> { 
-            return (<ListCard list={list} key={index} handleDelete={()=> console.log('del')} handleShare={()=> {
-              setSharePopupShown(true);
-              setTargetList(list);
-              
-
-            }}/>)
+            return (<ListCard list={list} key={index} handleDelete={fetchlists} handleShare={fetchlists}/>)
         })}</Grid2>
         <IconButton color="primary" onClick={handleOpenListPopup}>
             <AddIcon />
         </IconButton>
-        <ShareDialog open={sharePopupShown} 
-        handleClose={()=>setSharePopupShown(false)} 
-        list={targetList} 
-        handleSubmit={()=> {
-            setSharePopupShown(false);
-            fetchlists();
-        }}/>
 
         <Dialog
         open={addListPopupShown}

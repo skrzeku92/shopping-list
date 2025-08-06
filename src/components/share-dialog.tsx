@@ -2,15 +2,15 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import React from 'react';
 import { UpdateFirestoreList } from '../helpers/utils';
 import { List } from '../types/type';
+import ShareIcon from '@mui/icons-material/Share'; 
 
 export type ShareDialogProps = {
-    open: boolean;
-    handleClose: () => void;
-    handleSubmit: () => void;
-    list: List | null;
+    handleSubmit?: () => void;
+    list?: List | null;
 }
 
-const ShareDialog: React.FC<ShareDialogProps> = ({open, handleClose, list, handleSubmit}) => {
+const ShareDialog: React.FC<ShareDialogProps> = ({list, handleSubmit}) => {
+    const [open, setOpen] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string | null>(null);
     const onSumbit = async (email: string): Promise<void> => {
         if (!list) {
@@ -25,13 +25,16 @@ const ShareDialog: React.FC<ShareDialogProps> = ({open, handleClose, list, handl
             return;
         }
         setError(null);
-        handleSubmit();
+        handleSubmit?.();
+        setOpen(false);
     }
 
     return (
+      <>
+      <Button variant="outlined" color='primary' startIcon={<ShareIcon/>} onClick={()=>setOpen(true)}>Share</Button>
         <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         slotProps={{
           paper: {
             component: 'form',
@@ -63,10 +66,11 @@ const ShareDialog: React.FC<ShareDialogProps> = ({open, handleClose, list, handl
         </DialogContent>
         <p>{error}</p>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={()=>setOpen(false)}>Cancel</Button>
           <Button type="submit">Invite</Button>
         </DialogActions>
       </Dialog>
+      </>
     );
 }
 

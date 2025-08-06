@@ -11,5 +11,5 @@ export type List  = {
     products: Product[] | undefined;
     createdAt: number;
     createdBy: string;
-    invited: string[];
+    invited?: string[];
 }

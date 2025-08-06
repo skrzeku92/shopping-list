@@ -7,6 +7,8 @@ import { List, Product } from '../types/type';
 import { useNavigate } from 'react-router-dom';
 import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ShareDialog from './share-dialog';
+import DeleteDialog from './delete-dialog';
 
 export type ListCardProps = {
     list: List;
@@ -31,8 +33,8 @@ const ListCard: React.FC<ListCardProps> = (props: ListCardProps) => {
                 <S.FlexCenter><Avatar sizes='small'>H</Avatar>{props.list.createdBy}</S.FlexCenter>
                 {props.list.invited}
                 <Grid2 container spacing={2} sx={{justifyContent: 'center'}} className="myown">
-                    <Button variant="outlined" color='primary' startIcon={<ShareIcon/>} onClick={props.handleShare}>Share</Button>
-                    <Button variant="outlined" color="error" startIcon={<DeleteIcon/>} onClick={props.handleDelete}>Delete</Button>
+                    <ShareDialog list={props.list} handleSubmit={props.handleShare} />
+                    <DeleteDialog onDelete={props.handleDelete} list={props.list}/>
                 </Grid2>
             </Card>
         </Grid2>)

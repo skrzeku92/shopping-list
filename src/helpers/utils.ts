@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, or, query, getDoc, where, setDoc, deleteDoc } from "firebase/firestore";
 import { app, getAuth } from "../firebase";
 import { List, Product } from "../types/type";
 import safeFetch from "./safe";
@@ -49,6 +49,18 @@ export const addList = async (title: string, userEmail: string)=> {
 export const UpdateFirestoreList = async (list: List): Promise<boolean> => {
     try {
         await setDoc(doc(db, 'lists', list.id), list, {merge: true});
+        return true;
+    }
+    catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+export const DeleteFirestoreList = async (listId: string): Promise<boolean> => {
+    console.log('Deleting list with ID:', listId);
+    try {
+        await deleteDoc(doc(db, 'lists', listId));
         return true;
     }
     catch (e) {
